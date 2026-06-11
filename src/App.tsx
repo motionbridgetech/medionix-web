@@ -427,7 +427,7 @@ const styles = {
   navLinks: { display: "flex", alignItems: "center", gap: 32 },
   navLink: { color: "#444", textDecoration: "none", fontSize: 15, fontWeight: 500 },
   navCta: { background: "#0d1117", color: "#fff", padding: "10px 22px", borderRadius: 100, fontSize: 14, fontWeight: 600, textDecoration: "none" },
-  menuBtn: { background: "none", border: "none", fontSize: 22, cursor: "pointer", display: "none" },
+  menuBtn: { background: "none", border: "none", fontSize: 22, cursor: "pointer" },
   mobileMenu: { background: "#fff", padding: "16px 32px 24px", display: "flex", flexDirection: "column", gap: 16 },
   mobileLink: { color: "#0d1117", textDecoration: "none", fontSize: 16, fontWeight: 500 },
   mobileCta: { background: "#0d1117", color: "#fff", padding: "12px 24px", borderRadius: 100, textAlign: "center", textDecoration: "none", fontWeight: 600 },
