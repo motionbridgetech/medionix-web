@@ -1,7 +1,8 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
+
 const SUPABASE_URL = "https://xzozlqeyjsuvofhpesas.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6b3pscWV5anN1dm9maHBlc2FzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTAxNjgzNCwiZXhwIjoyMDk2NTkyODM0fQ.oozYIDX4LRGeW8ZJ6Y7IJY69-A7PWojseK8Uz8axHxw";
+const SUPABASE_ANON_KEY = "REPLACE_WITH_YOUR_NEW_ANON_KEY";
 
 const NAV_LINKS = ["Features", "How It Works", "Pricing", "Contact"];
 
@@ -28,15 +29,11 @@ const STATS = [
   { value: "24/7", label: "Telemedicine Coverage" },
 ];
 
-// ============================================================
-// WAITLIST FORM — fully wired to Supabase
-// ============================================================
 function WaitlistForm({ dark = false }) {
   const [role, setRole] = useState("");
-const [email, setEmail] = useState("");
-const [status, setStatus] = useState("idle");
-const [message, setMessage] = useState("");
-  
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [message, setMessage] = useState("");
 
   function isValidEmail(e) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
@@ -45,16 +42,13 @@ const [message, setMessage] = useState("");
   async function handleSubmit() {
     const trimmed = email.trim().toLowerCase();
     if (!trimmed) return;
-
     if (!isValidEmail(trimmed)) {
       setStatus("error");
       setMessage("Please enter a valid email address.");
       return;
     }
-
     setStatus("loading");
     setMessage("");
-
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
         method: "POST",
@@ -66,20 +60,8 @@ const [message, setMessage] = useState("");
         },
         body: JSON.stringify({ email: trimmed, source: "medionix-landing", role: role || null }),
       });
-
-      if (res.status === 201) {
-        setStatus("success");
-        setMessage("You're on the waitlist! We'll be in touch within 48 hours.");
-        setEmail("");
-        return;
-      }
-
-      if (res.status === 409) {
-        setStatus("duplicate");
-        setMessage("You're already on the list — we haven't forgotten you.");
-        return;
-      }
-
+      if (res.status === 201) { setStatus("success"); setEmail(""); return; }
+      if (res.status === 409) { setStatus("duplicate"); setMessage("You're already on the list — we haven't forgotten you."); return; }
       const data = await res.json().catch(() => ({}));
       setStatus("error");
       setMessage(data?.message || "Something went wrong. Please try again.");
@@ -110,12 +92,7 @@ const [message, setMessage] = useState("");
     <div>
       <div style={formStyles.row}>
         <input
-          style={{
-            ...formStyles.input,
-            background: dark ? "#1a1f2b" : "#fff",
-            color: dark ? "#fff" : "#0d1117",
-            border: inputBorder,
-          }}
+          style={{ ...formStyles.input, background: dark ? "#1a1f2b" : "#fff", color: dark ? "#fff" : "#0d1117", border: inputBorder }}
           type="email"
           placeholder="Your clinic email"
           value={email}
@@ -124,54 +101,30 @@ const [message, setMessage] = useState("");
           disabled={status === "loading"}
         />
         <select
-  style={{
-    ...formStyles.input,
-    background: dark ? "#1a1f2b" : "#fff",
-    color: dark ? (role ? "#fff" : "#888") : (role ? "#0d1117" : "#999"),
-    border: dark ? "1px solid #333" : "1px solid #d0cec8",
-    cursor: "pointer",
-    width: "auto",
-  }}
-  value={role}
-  onChange={(e) => setRole(e.target.value)}
-  disabled={status === "loading"}
->
-  <option value="">I am a...</option>
-  <option value="clinic-owner">Clinic Owner / Manager</option>
-  <option value="doctor">Doctor</option>
-  <option value="receptionist">Receptionist / Admin Staff</option>
-  <option value="other">Other</option>
-</select>
-
-
+          style={{ ...formStyles.input, background: dark ? "#1a1f2b" : "#fff", color: dark ? (role ? "#fff" : "#888") : (role ? "#0d1117" : "#999"), border: dark ? "1px solid #333" : "1px solid #d0cec8", cursor: "pointer", width: "auto" }}
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          disabled={status === "loading"}
+        >
+          <option value="">I am a...</option>
+          <option value="clinic-owner">Clinic Owner / Manager</option>
+          <option value="doctor">Doctor</option>
+          <option value="receptionist">Receptionist / Admin Staff</option>
+          <option value="other">Other</option>
+        </select>
         <button
           onClick={handleSubmit}
           disabled={status === "loading" || !email.trim()}
-          style={{
-            ...formStyles.btn,
-            opacity: status === "loading" || !email.trim() ? 0.7 : 1,
-            cursor: status === "loading" || !email.trim() ? "not-allowed" : "pointer",
-          }}
+          style={{ ...formStyles.btn, opacity: status === "loading" || !email.trim() ? 0.7 : 1, cursor: status === "loading" || !email.trim() ? "not-allowed" : "pointer" }}
         >
-          {status === "loading" ? (
-            <span style={formStyles.spinner}>⟳</span>
-          ) : "Request Demo"}
+          {status === "loading" ? <span style={formStyles.spinner}>⟳</span> : "Request Demo"}
         </button>
       </div>
-
       {(status === "error" || status === "duplicate") && (
-        <p style={{
-          ...formStyles.feedback,
-          color: status === "error" ? "#ff6b6b" : "#f0a500",
-        }}>
-          {message}
-        </p>
+        <p style={{ ...formStyles.feedback, color: status === "error" ? "#ff6b6b" : "#f0a500" }}>{message}</p>
       )}
-
       {status === "idle" && (
-        <p style={{ ...formStyles.note, color: dark ? "#555" : "#999" }}>
-          No commitment. We'll reach out within 48 hours.
-        </p>
+        <p style={{ ...formStyles.note, color: dark ? "#555" : "#999" }}>No commitment. We'll reach out within 48 hours.</p>
       )}
     </div>
   );
@@ -179,35 +132,17 @@ const [message, setMessage] = useState("");
 
 const formStyles = {
   row: { display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" },
-  input: {
-    padding: "14px 20px", borderRadius: 100, fontSize: 15,
-    width: 280, outline: "none", fontFamily: "inherit",
-  },
-  btn: {
-    background: "#00c47a", color: "#0d1117", padding: "14px 28px",
-    borderRadius: 100, fontWeight: 700, fontSize: 15, border: "none",
-    fontFamily: "inherit", transition: "all 0.2s", minWidth: 140,
-  },
+  input: { padding: "14px 20px", borderRadius: 100, fontSize: 15, width: 280, outline: "none", fontFamily: "inherit" },
+  btn: { background: "#00c47a", color: "#0d1117", padding: "14px 28px", borderRadius: 100, fontWeight: 700, fontSize: 15, border: "none", fontFamily: "inherit", transition: "all 0.2s", minWidth: 140 },
   feedback: { fontSize: 13, marginTop: 12, textAlign: "center" },
   note: { fontSize: 13, marginTop: 16, textAlign: "center" },
-  successBox: {
-    display: "flex", alignItems: "center", gap: 16,
-    background: "rgba(0,196,122,0.12)", border: "1px solid rgba(0,196,122,0.3)",
-    borderRadius: 12, padding: "18px 24px", maxWidth: 420, margin: "0 auto",
-  },
-  successIcon: {
-    width: 36, height: 36, background: "#00c47a", color: "#0d1117",
-    borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-    fontWeight: 800, fontSize: 16, flexShrink: 0,
-  },
+  successBox: { display: "flex", alignItems: "center", gap: 16, background: "rgba(0,196,122,0.12)", border: "1px solid rgba(0,196,122,0.3)", borderRadius: 12, padding: "18px 24px", maxWidth: 420, margin: "0 auto" },
+  successIcon: { width: 36, height: 36, background: "#00c47a", color: "#0d1117", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 16, flexShrink: 0 },
   successTitle: { color: "#00e5a0", fontWeight: 700, fontSize: 15, marginBottom: 4 },
   successSub: { color: "#888", fontSize: 13 },
   spinner: { display: "inline-block", animation: "spin 1s linear infinite" },
 };
 
-// ============================================================
-// MAIN LANDING PAGE
-// ============================================================
 export default function MedionixLanding() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -276,7 +211,7 @@ export default function MedionixLanding() {
             The Clinical OS<br />
             <span style={styles.heroAccent}>Africa Deserves.</span>
           </h1>
-          <p style={styles.heroSub} className="reveal reveal-delay-2 hero-visual">
+          <p style={styles.heroSub} className="reveal reveal-delay-2">
             Medionix is the lightweight clinical operating system powering patient records,
             diagnostics, telemedicine, and analytics — purpose-built for African clinics.
           </p>
@@ -293,7 +228,7 @@ export default function MedionixLanding() {
             ))}
           </div>
         </div>
-        <div style={styles.heroVisual} className="reveal reveal-delay-2">
+        <div style={styles.heroVisual} className="reveal reveal-delay-2 hero-visual">
           <div style={styles.dashMock}>
             <div style={styles.dashBar}>
               <div style={styles.dashDots}>
@@ -427,8 +362,8 @@ export default function MedionixLanding() {
           </div>
           <div style={styles.pricingGrid}>
             {[
-              { name: "Patients", price: "Free", desc: "For registration and bookings.", features: ["provided categories for easy access", "patient ID for quicker access", "Storing patients records", "Email support"] },
-              { name: "Clinic", price: "N40k/mo", desc: "For growing clinics that need full power.", features: ["Unlimited patients", "Full diagnostics & labs", "Telemedicine built-in", "Analytics dashboard", "Priority support"], highlight: true },
+              { name: "Patients", price: "Free", desc: "For registration and bookings.", features: ["Provided categories for easy access", "Patient ID for quicker access", "Storing patient records", "Email support"] },
+              { name: "Clinic", price: "₦40k/mo", desc: "For growing clinics that need full power.", features: ["Unlimited patients", "Full diagnostics & labs", "Telemedicine built-in", "Analytics dashboard", "Priority support"], highlight: true },
               { name: "Network", price: "Custom", desc: "For hospital networks and health systems.", features: ["Multi-branch management", "Custom integrations", "Dedicated onboarding", "SLA & compliance", "24/7 support"] },
             ].map((p) => (
               <div key={p.name} style={{ ...styles.pricingCard, ...(p.highlight ? styles.pricingHighlight : {}) }} className="reveal">
@@ -451,11 +386,9 @@ export default function MedionixLanding() {
         </div>
       </section>
 
-      {/* CTA / CONTACT — WaitlistForm integrated here */}
+      {/* CTA */}
       <section id="contact" style={styles.ctaSection}>
-        <div style={styles.ctaBg}>
-          <div style={styles.ctaOrb} />
-        </div>
+        <div style={styles.ctaBg}><div style={styles.ctaOrb} /></div>
         <div style={styles.container}>
           <div style={styles.ctaInner} className="reveal">
             <h2 style={styles.ctaH2}>Ready to Transform<br />Your Clinic?</h2>
@@ -494,11 +427,10 @@ const styles = {
   navLinks: { display: "flex", alignItems: "center", gap: 32 },
   navLink: { color: "#444", textDecoration: "none", fontSize: 15, fontWeight: 500 },
   navCta: { background: "#0d1117", color: "#fff", padding: "10px 22px", borderRadius: 100, fontSize: 14, fontWeight: 600, textDecoration: "none" },
-  menuBtn: { background: "none", border: "none", fontSize: 22, cursor: "pointer", display: "none"},
+  menuBtn: { background: "none", border: "none", fontSize: 22, cursor: "pointer", display: "none" },
   mobileMenu: { background: "#fff", padding: "16px 32px 24px", display: "flex", flexDirection: "column", gap: 16 },
   mobileLink: { color: "#0d1117", textDecoration: "none", fontSize: 16, fontWeight: 500 },
   mobileCta: { background: "#0d1117", color: "#fff", padding: "12px 24px", borderRadius: 100, textAlign: "center", textDecoration: "none", fontWeight: 600 },
-
   hero: { minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", padding: "120px 32px 80px", gap: 60, maxWidth: 1200, margin: "0 auto", flexWrap: "wrap" },
   heroBg: { position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none" },
   gridOverlay: { position: "absolute", inset: 0, backgroundImage: "linear-gradient(#e0dfd9 1px, transparent 1px), linear-gradient(90deg, #e0dfd9 1px, transparent 1px)", backgroundSize: "48px 48px", opacity: 0.6 },
@@ -518,7 +450,6 @@ const styles = {
   statItem: { display: "flex", flexDirection: "column" },
   statValue: { fontSize: 32, fontWeight: 800, color: "#0d1117", letterSpacing: "-1px" },
   statLabel: { fontSize: 13, color: "#777", marginTop: 2 },
-
   heroVisual: { flex: "1 1 440px", maxWidth: 540 },
   dashMock: { background: "#fff", borderRadius: 16, boxShadow: "0 32px 80px rgba(0,0,0,0.12)", overflow: "hidden", border: "1px solid #e8e6e0" },
   dashBar: { background: "#f0eeea", padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #e8e6e0" },
@@ -539,14 +470,12 @@ const styles = {
   patientAvatar: { width: 24, height: 24, borderRadius: "50%", background: "linear-gradient(135deg, #00c47a, #0064ff)" },
   patientName: { fontSize: 11, color: "#444", flex: 1 },
   patientStatus: { fontSize: 10, background: "#e8f9f3", color: "#00a864", padding: "2px 8px", borderRadius: 100, fontWeight: 600 },
-
   section: { padding: "100px 32px" },
   darkSection: { padding: "100px 32px", background: "#0d1117" },
   container: { maxWidth: 1200, margin: "0 auto" },
   sectionHead: { textAlign: "center", marginBottom: 64 },
   sectionTag: { fontSize: 13, fontWeight: 700, color: "#00a864", letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: 16 },
   sectionH2: { fontSize: "clamp(32px,4vw,52px)", fontWeight: 800, letterSpacing: "-1.5px", lineHeight: 1.1 },
-
   featureGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 },
   featureCard: { background: "#fff", border: "1px solid #e8e6e0", borderRadius: 16, padding: "32px 28px", cursor: "pointer", transition: "all 0.25s", position: "relative", overflow: "hidden" },
   featureCardActive: { border: "1px solid #00c47a", transform: "translateY(-4px)", boxShadow: "0 20px 48px rgba(0,196,122,0.12)" },
@@ -554,14 +483,12 @@ const styles = {
   featureTitle: { fontSize: 19, fontWeight: 700, marginBottom: 10, color: "#0d1117" },
   featureDesc: { fontSize: 15, color: "#666", lineHeight: 1.65 },
   featureArrow: { position: "absolute", bottom: 24, right: 24, fontSize: 18, color: "#ccc" },
-
   stepsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 40 },
   step: { position: "relative" },
   stepNum: { fontSize: 48, fontWeight: 900, color: "#00c47a", letterSpacing: "-2px", lineHeight: 1, marginBottom: 16 },
   stepLine: { width: 40, height: 2, background: "#00c47a", marginBottom: 16 },
   stepTitle: { fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 12 },
   stepDesc: { fontSize: 15, color: "#888", lineHeight: 1.65 },
-
   calloutSection: { padding: "80px 32px", background: "#fff" },
   callout: { display: "flex", gap: 64, alignItems: "center", flexWrap: "wrap" },
   calloutLeft: { flex: "1 1 420px" },
@@ -576,7 +503,6 @@ const styles = {
   aiTag: { background: "#00c47a", color: "#0d1117", fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 4, flexShrink: 0, marginTop: 2 },
   triageAction: { display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#666" },
   actionDot: { width: 8, height: 8, background: "#00c47a", borderRadius: "50%", flexShrink: 0 },
-
   pricingGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 },
   pricingCard: { background: "#fff", border: "1px solid #e8e6e0", borderRadius: 20, padding: "36px 32px", display: "flex", flexDirection: "column", gap: 16 },
   pricingHighlight: { background: "#0d1117", border: "1px solid #00c47a", transform: "scale(1.03)" },
@@ -586,14 +512,12 @@ const styles = {
   pricingList: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10, flex: 1 },
   pricingItem: { fontSize: 14, display: "flex", gap: 10, alignItems: "center" },
   check: { color: "#00c47a", fontWeight: 700 },
-
   ctaSection: { padding: "120px 32px", position: "relative", background: "#0d1117", textAlign: "center" },
   ctaBg: { position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" },
   ctaOrb: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, background: "radial-gradient(circle, rgba(0,196,122,0.15) 0%, transparent 65%)", borderRadius: "50%" },
   ctaInner: { position: "relative", maxWidth: 560, margin: "0 auto" },
   ctaH2: { fontSize: "clamp(36px,5vw,64px)", fontWeight: 900, letterSpacing: "-2px", lineHeight: 1.05, color: "#fff", marginBottom: 20 },
   ctaSub: { fontSize: 18, color: "#888", marginBottom: 40 },
-
   footer: { background: "#0a0c10", padding: "48px 32px" },
   footerInner: { maxWidth: 1200, margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 },
   footerSub: { fontSize: 14, color: "#555" },
@@ -616,8 +540,14 @@ const css = `
   a:hover { opacity: 0.85; }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   @media (max-width: 768px) {
-    nav div[style*="gap:32px"] { display: none !important; }
-    .hero { flex-direction: column; padding-top: 100px; }
+    .nav-links { display: none !important; }
+    .menu-btn { display: block !important; }
+    .hero-section { flex-direction: column !important; padding: 100px 20px 60px !important; text-align: center !important; }
+    .hero-ctas { display: flex !important; flex-direction: row !important; justify-content: center !important; flex-wrap: wrap !important; gap: 12px !important; }
+    .hero-ctas a { width: auto !important; text-align: center !important; display: inline-block !important; }
+    .hero-stats { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 24px !important; width: 100% !important; }
+    .hero-visual { display: none !important; }
   }
 `;
+
 
