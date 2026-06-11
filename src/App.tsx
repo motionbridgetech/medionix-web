@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const SUPABASE_URL = "https://xzozlqeyjsuvofhpesas.supabase.co";
-const SUPABASE_ANON_KEY = "REPLACE_WITH_YOUR_NEW_ANON_KEY";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6b3pscWV5anN1dm9maHBlc2FzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTY4MzQsImV4cCI6MjA5NjU5MjgzNH0.C4AARGWNIIxTOcMobQxT6Z0O2-wt3P8ffZsevCyNNXc";
 
 const NAV_LINKS = ["Features", "How It Works", "Pricing", "Contact"];
 
