@@ -240,13 +240,13 @@ export default function MedionixLanding() {
             <span style={styles.logoMark}>M</span>
             <span style={styles.logoText}>Medionix</span>
           </div>
-          <div style={styles.navLinks}>
+          <div style={styles.navLinks} className="nav-links">
             {NAV_LINKS.map((l) => (
               <a key={l} href={`#${l.toLowerCase().replace(" ", "-")}`} style={styles.navLink}>{l}</a>
             ))}
             <a href="#contact" style={styles.navCta}>Request Demo</a>
           </div>
-          <button style={styles.menuBtn} onClick={() => setMenuOpen(!menuOpen)}>
+          <button style={styles.menuBtn} className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? "✕" : "☰"}
           </button>
         </div>
@@ -261,7 +261,7 @@ export default function MedionixLanding() {
       </nav>
 
       {/* HERO */}
-      <section ref={heroRef} style={styles.hero} id="hero">
+      <section ref={heroRef} style={styles.hero} id="hero" className="hero-section">
         <div style={styles.heroBg}>
           <div style={styles.gridOverlay} />
           <div style={styles.orb1} />
@@ -276,15 +276,15 @@ export default function MedionixLanding() {
             The Clinical OS<br />
             <span style={styles.heroAccent}>Africa Deserves.</span>
           </h1>
-          <p style={styles.heroSub} className="reveal reveal-delay-2">
+          <p style={styles.heroSub} className="reveal reveal-delay-2 hero-visual">
             Medionix is the lightweight clinical operating system powering patient records,
             diagnostics, telemedicine, and analytics — purpose-built for African clinics.
           </p>
-          <div style={styles.heroCtas} className="reveal reveal-delay-3">
+          <div style={styles.heroCtas} className="reveal reveal-delay-3 hero-ctas">
             <a href="#contact" style={styles.primaryBtn}>Get Early Access</a>
             <a href="#how-it-works" style={styles.ghostBtn}>See How It Works →</a>
           </div>
-          <div style={styles.heroStats} className="reveal reveal-delay-4">
+          <div style={styles.heroStats} className="reveal reveal-delay-4 hero-stats">
             {STATS.map((s) => (
               <div key={s.label} style={styles.statItem}>
                 <span style={styles.statValue}>{s.value}</span>
@@ -494,7 +494,7 @@ const styles = {
   navLinks: { display: "flex", alignItems: "center", gap: 32 },
   navLink: { color: "#444", textDecoration: "none", fontSize: 15, fontWeight: 500 },
   navCta: { background: "#0d1117", color: "#fff", padding: "10px 22px", borderRadius: 100, fontSize: 14, fontWeight: 600, textDecoration: "none" },
-  menuBtn: { display: "none", background: "none", border: "none", fontSize: 22, cursor: "pointer" },
+  menuBtn: { background: "none", border: "none", fontSize: 22, cursor: "pointer", display: "none"},
   mobileMenu: { background: "#fff", padding: "16px 32px 24px", display: "flex", flexDirection: "column", gap: 16 },
   mobileLink: { color: "#0d1117", textDecoration: "none", fontSize: 16, fontWeight: 500 },
   mobileCta: { background: "#0d1117", color: "#fff", padding: "12px 24px", borderRadius: 100, textAlign: "center", textDecoration: "none", fontWeight: 600 },
